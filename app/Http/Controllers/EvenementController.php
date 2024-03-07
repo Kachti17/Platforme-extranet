@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Evenement;
 use App\Http\Requests\StoreEvenementRequest;
 use App\Http\Requests\UpdateEvenementRequest;
+use App\Http\Requests\FormulaireEventRequest;
 
 class EvenementController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -19,9 +21,21 @@ class EvenementController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function creerEvent(FormulaireEventRequest $request)
     {
-        //
+        // Validation réussie, créer un nouvel événement
+        $evenement = new Evenement();
+        $evenement->description = $request->description;
+        $evenement->image = $request->image;
+        $evenement->date_evenement = $request->date_evenement;
+        $evenement->lieu_evenement = $request->lieu_evenement;
+        $evenement->source_event = $request->source_event;
+        $evenement->nbr_max = $request->nbr_max;
+        $evenement->nbr_participants = 0; // Initialiser le nombre de participants à 0
+
+        $evenement->save();
+
+        // Redirection ou réponse appropriée après la création de l'événement
     }
 
     /**

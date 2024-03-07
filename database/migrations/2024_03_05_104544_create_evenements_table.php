@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('evenements', function (Blueprint $table) {
             $table->id('id_event');
             $table->text('description');
+            $table->string('image')->nullable();
             $table->timestamp('date_event');
             $table->string('lieu_event');
             $table->integer('nbr_max');
