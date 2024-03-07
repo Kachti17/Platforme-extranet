@@ -26,8 +26,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::get('/users/{id}', [UserController::class, 'show']);
 
 Route::post('/register', [RegisteredUserController::class, 'creerUtilisateur']);
+Route::post('/makePassword', [RegisteredUserController::class, 'makePassword']);//edheya ki tsir el creation d un user w bech ya3mel password
+
+
 Route::post('/login', [LoginController::class, 'login']);
-Route::delete('/users/{id}', [UserController::class, 'destroy']);
+Route::delete('/users/{id}', [UserController::class, 'delete']);
 
 
 Route::get('/users/filter-by-name/{name}', [UserController::class, 'filterByName']);

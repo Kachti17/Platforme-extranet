@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use App\Mail\WelcomeEmail;
 use Illuminate\Support\Str;
+use App\Mail\MailNotify;
+use Illuminate\Support\Facades\Validator;
 
 class RegisteredUserController extends Controller
 {
@@ -43,16 +45,18 @@ class RegisteredUserController extends Controller
             'tel' => 'nullable|string|max:20',
         ]);
 
+
         $user = User::create([
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            //'password' => Hash::make($request->password),
+            'password' => $request->password,
             'tel' => $request->tel,
         ]);
 
-        // Send email with user data
-        $this->sendUserEmail($user);
+        // Send email
+        Mail::to($user->email)->send(new MailNotify($user));
 
         event(new Registered($user));
 
@@ -61,20 +65,72 @@ class RegisteredUserController extends Controller
         return response()->json(['message' => 'User account created successfully'], 201);
     }
 
-     // Function to send email with user data
+
+    public function makePassword(Request $request)
+    {
+        // Validation des données
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'new_password' => 'required|string', // Validation du nouveau mot de passe
+        ]);
+
+        // Si la validation échoue, retourne une réponse avec l'erreur
+        if ($validator->fails()) {
+            return response()->json(['error' => 'Les données entrées sont invalides.'], 400);
+        }
+
+        $email = $request->input('email');
+        $newPassword = $request->input('new_password');
+
+        // Réinitialisation du mot de passe sans confirmation
+        if ($this->resetPasswordWithoutConfirmation($email, $newPassword)) {
+            return response()->json(['message' => 'Mot de passe réinitialisé avec succès.'], 200);
+        }
+
+        // Si l'email n'est pas trouvé, retourne une erreur
+        return response()->json(['error' => 'Adresse e-mail invalide.'], 404);
+    }
+
+    /**
+     * Réinitialise le mot de passe sans confirmation.
+     *
+     * @param  string  $email
+     * @param  string  $newPassword
+     * @return bool
+     */
+    private function resetPasswordWithoutConfirmation($email, $newPassword)
+    {
+        $user = User::where('email', $email)->first();
+
+        if ($user) {
+            // Met à jour le mot de passe de l'utilisateur avec le nouveau mot de passe
+            $user->password = Hash::make($newPassword);
+            $user->save();
+            return true;
+        }
+
+        return false;
+    }
+
+
+
+    /*Function to send email with user data
      private function sendUserEmail(User $user)
      {
-         // Build email content
+          Build email content
          $emailContent = "Bonjour " . $user->prenom . " " . $user->nom . ",\n";
          $emailContent .= "Votre compte utilisateur a été créé avec succès.\n";
          $emailContent .= "Voici vos informations :\n";
          $emailContent .= "Nom : " . $user->nom . "\n";
          $emailContent .= "Prénom : " . $user->prenom . "\n";
          $emailContent .= "Email : " . $user->email . "\n";
+        // $emailContent .= "Mot de passe : " . $password . "\n";
+         $emailContent .= "Telephone : " . $user->tel . "\n";
 
          // Send email
-         Mail::raw($emailContent, function ($message) use ($user) {
-             $message->to($user->email)->subject('Confirmation de création de compte');
-         });
-     }
+
+         // Mail::send($emailContent, function ($message) use ($user) {
+          //$message->to($user->email)->subject('Confirmation de création de compte');
+         // });
+     }*/
 }
