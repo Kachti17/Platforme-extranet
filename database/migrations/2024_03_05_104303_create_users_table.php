@@ -15,10 +15,10 @@ return new class extends Migration
         $table->id();
         $table->string('nom');
         $table->string('prenom');
-        $table->string('login')->unique();
-        $table->string('pswrd');
+        $table->string('email')->unique();
+        $table->string('password');
         $table->string('tel')->nullable();
-        $table->foreignId('id_role')->constrained('roles');
+       // $table->foreignId('id_role')->constrained('roles')->nullable();
         $table->timestamps();
     });
 }
