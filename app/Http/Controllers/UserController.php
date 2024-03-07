@@ -31,7 +31,8 @@ class UserController extends Controller
                 'nom' => $request->nom,
                 'prenom' => $request->prenom,
                 'email' => $request->email,
-                'password' => bcrypt($request->password), // Hashage du mot de passe
+                //'password' => bcrypt($request->password), // Hashage du mot de passe
+                'password' => $request->password, // Hashage du mot de passe
                 'tel' => $request->input('tel'),
                 //'id_role' => $request->input('role'),
             ]);
@@ -112,16 +113,14 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-     public function delete($id)
+    public function delete($id)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            return response()->json(['message' => 'Utilisateur supprimé avec succès'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de la suppression de l\'utilisateur', 'error' => $e->getMessage()], 500);
         }
-
-        $user->delete();
-
-        return response()->json(['message' => 'Utilisateur supprimé avec succès'], 200);
     }
 }
