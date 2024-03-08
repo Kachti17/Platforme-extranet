@@ -9,7 +9,7 @@ class Evenement extends Model
 {
     use HasFactory;
 
-
+    public $timestamps = false;
     protected $fillable = [
         'description',
         'image',
@@ -17,11 +17,10 @@ class Evenement extends Model
         'lieu_event',
         'nbr_max',
         'nbr_participants',
-        'source_event'
     ];
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 }

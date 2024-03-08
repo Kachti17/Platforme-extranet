@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('role_has_permissions', function (Blueprint $table) {
-            $table->id('id_rolePermission');
-            $table->unsignedBigInteger('id_role');
-            $table->unsignedBigInteger('id_permission');
+            $table->id('id');
+            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('permission_is');
             $table->timestamps();
 
-            /*$table->foreign('id_role')->references('id_role')->on('roles')->onDelete('cascade');
-            $table->foreign('id_permission')->references('permissions');*/
+            /*$table->foreign('role_id')->references('role_id')->on('roles')->onDelete('cascade');
+            $table->foreign('permission_id')->references('permissions');*/              //fama probleme lena
         });
     }
 

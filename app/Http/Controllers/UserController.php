@@ -31,10 +31,9 @@ class UserController extends Controller
                 'nom' => $request->nom,
                 'prenom' => $request->prenom,
                 'email' => $request->email,
-                //'password' => bcrypt($request->password), // Hashage du mot de passe
-                'password' => $request->password, // Hashage du mot de passe
+                'password' => bcrypt($request->password), // Hashage du mot de passe
                 'tel' => $request->input('tel'),
-                //'id_role' => $request->input('role'),
+                //'role_id' => $request->input('role'),
             ]);
 
             // Retournez un message de succès
@@ -44,7 +43,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function showAllUsers()
     {
        $user = User::all();
        return response()->json($user);
@@ -69,7 +68,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function showUserById($id)
     {
         $user = User::findOrFail($id);
         return response()->json($user);
@@ -113,7 +112,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete($id)
+    public function deleteUser($id)
     {
         try {
             $user = User::findOrFail($id);

@@ -13,13 +13,13 @@ return new class extends Migration
     {
 
             Schema::create('reactions_post', function (Blueprint $table) {
-                $table->id('id_reactionPost');
-                $table->unsignedBigInteger('id_pub');
-                $table->unsignedBigInteger('id_typeReactionPost');
+                $table->id('id');
+                $table->unsignedBigInteger('pub_id');
+                $table->unsignedBigInteger('typeReactionPost_id');
                 $table->timestamps();
 
-                $table->foreign('id_pub')->references('id_pub')->on('publications')->onDelete('cascade');
-                $table->foreign('id_typeReactionPost')->references('id_typeReactionPost')->on('type_reactions_post')->onDelete('cascade');
+                $table->foreign('pub_id')->references('pub_id')->on('publications')->onDelete('cascade');
+                $table->foreign('typeReactionPost_id')->references('typeReactionPost_id')->on('type_reactions_post')->onDelete('cascade');
             });
     }
 

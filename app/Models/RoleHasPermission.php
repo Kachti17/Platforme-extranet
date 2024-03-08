@@ -1,21 +1,26 @@
 <?php
 
 namespace App\Models;
-
+use    Illuminate\Database\QueryException ;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Publication extends Model
+class RoleHasPermission extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'date_pub', 'source_pub', 'isApproved', 'nbr_comm', 'nbr_react',
-    ];
+    protected $table = 'role_has_permissions';
 
-    public function user()
+    public function role()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(Role::class);
     }
 
+    /**
+     * Get the permission associated with the role.
+     */
+    public function permission()
+    {
+        return $this->belongsTo(Permission::class);
+    }
 }

@@ -18,6 +18,6 @@ class ReactionPost extends Model
 
     public function typeReactionPost()
     {
-        return $this->belongsTo(TypeReactionPost::class, 'id_typeReactionPost');
+        return $this->belongsTo(TypeReactionPost::class, 'typeReactionPost_id');
     }
 }
