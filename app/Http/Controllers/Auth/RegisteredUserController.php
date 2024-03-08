@@ -35,7 +35,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function creerUtilisateur(Request $request)
+    public function createUser(Request $request)
     {
         $request->validate([
             'nom' => 'required|string|max:255',
@@ -50,8 +50,8 @@ class RegisteredUserController extends Controller
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'email' => $request->email,
-            //'password' => Hash::make($request->password),
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
+            //'password' => $request->password,
             'tel' => $request->tel,
         ]);
 

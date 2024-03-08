@@ -9,7 +9,6 @@ class TypeReactionPost extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_typeReactionPost';
 
     protected $fillable = [
         'img_reactionPost',
@@ -17,6 +16,6 @@ class TypeReactionPost extends Model
 
     public function reactionPost()
     {
-        return $this->hasMany(ReactionPost::class, 'id_typeReactionPost');
+        return $this->hasMany(ReactionPost::class, 'typeReactionPost_id');
     }
 }

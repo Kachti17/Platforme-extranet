@@ -12,16 +12,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('publications', function (Blueprint $table) {
-            $table->id('id_pub');
+            $table->id('id');
             $table->timestamp('date_pub')->useCurrent();
-            $table->string('source_pub');
             $table->boolean('isApproved');
             $table->unsignedBigInteger('nbr_comm');
             $table->unsignedBigInteger('nbr_react');
-            $table->unsignedBigInteger('id_contenu');
-            $table->unsignedBigInteger('id_user');
-            $table->foreign('id_contenu')->references('id_contenu')->on('contenus');
-            $table->foreign('id_user')->references('id_user')->on('users');
+            $table->unsignedBigInteger('contenu_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('contenu_id')->references('contenu_id')->on('contenus');
+            $table->foreign('user_id')->references('user_id')->on('users');
         });
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
 
             Schema::create('type_reactions_msg', function (Blueprint $table) {
-                $table->id('id_typeReactionMsg');
+                $table->id('id');
                 $table->string('img_reactionMsg');
                 $table->timestamps();
             });

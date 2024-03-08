@@ -9,16 +9,16 @@ class Message extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'corps', 'source', 'destination', 'date_envoie',
+        'corps', 'destination', 'date_envoie',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function reactions()
     {
-        return $this->hasMany(Reaction::class, 'id_reactMsg');
+        return $this->hasMany(ReactionMsg::class, 'reactMsg_id');
     }
 }

@@ -9,7 +9,7 @@ class ReactionMsg extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_reactionMsg';
+    protected $primaryKey = 'reactionMsg_id';
 
     protected $fillable = [
         // Attributs spécifiques à ReactionMsg
@@ -17,6 +17,6 @@ class ReactionMsg extends Model
 
     public function typeReactionMsg()
     {
-        return $this->belongsTo(TypeReactionMsg::class, 'id_typeReactionMsg');
+        return $this->belongsTo(TypeReactionMsg::class, 'typeReactionMsg_id');
     }
 }

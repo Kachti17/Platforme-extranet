@@ -17,6 +17,6 @@ class User extends Authenticatable
 
     public function publications()
     {
-        return $this->hasMany(Publication::class, 'id_user');
+        return $this->hasMany(Publication::class, 'user_id');
     }
 }

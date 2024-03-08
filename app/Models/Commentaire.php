@@ -9,11 +9,11 @@ class Commentaire extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'source_comm', 'contenu_comm', 'date_comm',
+        'contenu_comm', 'date_comm',
     ];
 
     public function publication()
     {
-        return $this->belongsTo(Publication::class, 'id_pub');
+        return $this->belongsTo(Publication::class, 'pub_id');
     }
 }

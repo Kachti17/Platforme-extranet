@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('type_reactions_post', function (Blueprint $table) {
-            $table->id('id_typeReactionPost');
+            $table->id('id');
             $table->string('img_reactionPost');
             $table->timestamps();
         });
