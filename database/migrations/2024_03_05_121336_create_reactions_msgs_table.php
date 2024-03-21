@@ -17,8 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('typeReactionMsg_id');
             $table->timestamps();
 
-            $table->foreign('pub_id')->references('pub_id')->on('publications')->onDelete('cascade');
-            $table->foreign('typeReactionMsg_id')->references('typeReactionMsg_id')->on('type_reactions_msg')->onDelete('cascade');
+            $table->foreign('pub_id')->references('id')->on('publications')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreign('typeReactionMsg_id')->references('id')->on('type_reactions_msg')->onDelete('cascade');
         });
     }
 

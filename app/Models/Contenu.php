@@ -10,7 +10,7 @@ class Contenu extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nom_contenu', 'type_contenu', 'extension', 'texte',
+        'nom_contenu', 'type_contenu', 'texte', 'image_path', 'video_path', 'lien'
     ];
 
 }

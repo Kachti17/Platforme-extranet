@@ -12,11 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('contenus', function (Blueprint $table) {
-            $table->id('id');
+            $table->id();
             $table->string('nom_contenu');
-            $table->string('type_contenu');
-            $table->string('extension');
+            $table->enum('type_contenu', ['texte', 'image', 'video', 'lien']);
             $table->text('texte')->nullable();
+            $table->string('image_path')->nullable();
+            $table->string('video_path')->nullable();
+            $table->string('lien')->nullable();
+
             $table->timestamps();
         });
     }

@@ -13,7 +13,7 @@ class Publication extends Model
     protected $fillable = [
         'date_pub', 'isApproved', 'nbr_comm', 'nbr_react',
     ];
-
+    public $timestamps = false;
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -33,4 +33,5 @@ class Publication extends Model
     {
         return $this->hasMany(ReactionPost::class, 'pub_id');
     }
+
 }

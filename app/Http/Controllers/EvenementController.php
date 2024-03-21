@@ -7,8 +7,11 @@ use App\Http\Requests\StoreEvenementRequest;
 use App\Http\Requests\UpdateEvenementRequest;
 use App\Http\Requests\FormulaireEventRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use DateTime;
 
+use App\Models\Participant;
 
 
 class EvenementController extends Controller
@@ -42,7 +45,7 @@ class EvenementController extends Controller
         $evenement->description = $validatedData['description'];
         $evenement->lieu_event = $validatedData['lieu_event'];
         $evenement->nbr_max = $validatedData['nbr_max'];
-        $evenement->nbr_participants = 0; // Initialisation du nombre de participants à 0
+        $evenement->nbr_participants = 1; // Initialisation du nombre de participants à 1
         $evenement->date_event = $validatedData['date_event']; // Utilisation de la date saisie par l'utilisateur
         $evenement->user_id = Auth::id(); // Récupère automatiquement l'ID de l'utilisateur authentifié
 
@@ -54,6 +57,13 @@ class EvenementController extends Controller
 
         // Sauvegarde de l'événement
         $evenement->save();
+
+        // Ajouter le créateur de l'événement à la liste des participants
+    $participant = new Participant();
+    $participant->user_id = Auth::id(); // ID de l'utilisateur créateur de l'événement
+    $participant->evenement_id = $evenement->id; // ID de l'événement créé
+    $participant->inscription_date = now(); // Date d'inscription actuelle
+    $participant->save();
 
         // Réponse JSON pour indiquer que l'événement a été créé avec succès
         return response()->json(['message' => 'Événement créé avec succès.'], 200);
@@ -89,6 +99,9 @@ class EvenementController extends Controller
 
             // Sauvegarde des modifications
             $evenement->save();
+            // Ajout de l'utilisateur en tant que participant à l'événement créé
+            $evenement->participants()->attach(Auth::id());
+
 
             return response()->json(['message' => 'Événement modifié avec succès'], 200);
         } catch (\Exception $e) {
@@ -186,4 +199,88 @@ public function listEvent(Request $request)
         return response()->json(['message' => 'Erreur lors de la récupération des événements', 'error' => $e->getMessage()], 500);
     }
 }
+
+
+
+
+public function participerEvenement(Request $request, $id)
+{
+    try {
+        // Récupérer l'événement spécifié
+        $evenement = Evenement::findOrFail($id);
+
+        // Vérifier si le nombre maximum de participants est atteint
+        if ($evenement->nbr_participants >= $evenement->nbr_max) {
+            throw new \Exception("Le nombre maximum de participants est atteint pour cet événement.");
+        }
+
+        // Récupérer l'utilisateur actuel
+        $user = auth()->user();
+
+        // Vérifier si l'utilisateur est déjà inscrit à cet événement
+        $existingParticipation = Participant::where('evenement_id', $evenement->id)
+            ->where('user_id', $user->id)->exists();
+        if ($existingParticipation) {
+            throw new \Exception("Vous êtes déjà inscrit à cet événement.");
+        }
+
+        // Créer une nouvelle entrée dans la table des participants
+        $participant = new Participant();
+        $participant->user_id = $user->id;
+        $participant->evenement_id = $evenement->id;
+        $participant->inscription_date = now(); // Date d'inscription actuelle
+        $participant->save();
+
+        // Incrémenter le nombre de participants de l'événement
+        $evenement->nbr_participants++;
+
+        // Sauvegarde des modifications de l'événement
+        $evenement->save();
+
+        return response()->json(['message' => 'Vous avez participé à l\'événement avec succès'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Erreur lors de la participation à l\'événement', 'error' => $e->getMessage()], 500);
+    }
+}
+
+public function annulerParticipation(Request $request, $id)
+{
+    try {
+        // Récupérer l'événement spécifié
+        $evenement = Evenement::findOrFail($id);
+
+        // Vérifier si l'utilisateur est inscrit à cet événement
+        $user = auth()->user();
+        $participation = Participant::where('user_id', $user->id)
+            ->where('evenement_id', $evenement->id)
+            ->first();
+
+        if (!$participation) {
+            throw new \Exception("Vous n'êtes pas inscrit à cet événement.");
+        }
+
+        // Calculer la date limite pour annuler la participation (24 heures avant la date de l'événement)
+        $dateEvenement = new DateTime($evenement->date_event);
+        $dateLimite = $dateEvenement->sub(new \DateInterval('P1D'));
+        // Vérifier si la date limite est passée
+        $now = new DateTime();
+        if ($now >= $dateLimite) {
+            throw new \Exception("Vous ne pouvez pas annuler votre participation car la date limite est dépassée.");
+        }
+
+        // Supprimer la participation de l'utilisateur à l'événement
+        $participation->delete();
+
+        // Décrémenter le nombre de participants dans l'événement
+        $evenement->nbr_participants--;
+
+        // Sauvegarder les modifications de l'événement
+        $evenement->save();
+
+        return response()->json(['message' => 'Votre participation à l\'événement a été annulée avec succès'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Erreur lors de l\'annulation de la participation', 'error' => $e->getMessage()], 500);
+    }
+}
+
 }
