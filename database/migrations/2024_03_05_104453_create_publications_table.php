@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('nbr_react');
             $table->unsignedBigInteger('contenu_id');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('contenu_id')->references('contenu_id')->on('contenus');
-            $table->foreign('user_id')->references('user_id')->on('users');
+            $table->foreign('contenu_id')->references('id')->on('contenus')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

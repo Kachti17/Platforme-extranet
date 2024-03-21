@@ -16,6 +16,9 @@ return new class extends Migration
             $table->text('contenu_comm');
             $table->dateTime('date_comm');
             $table->foreignId('pub_id')->constrained('publications');
+            $table->foreignId('user_id')->constrained('users');
+            $table->timestamps(); // Cette ligne ajoutera les colonnes "created_at" et "updated_at"
+
         });
     }
 
